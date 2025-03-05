@@ -1,11 +1,15 @@
 const baseUrl = import.meta.env.VITE_BASE_URL
 const apiPath = import.meta.env.VITE_API_PATH
-import { useEffect, useState } from 'react'
 import axios from 'axios'
+
 import Pagination from '../../components/admin/Pagination'
 import ProductModal from '../../components/admin/ProductModal'
 import DelProductModal from '../../components/admin/DelProductModal'
+import FullscreenLoading from '../../components/FullscreenLoading'
+
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
+
 
 function ProductPage() {
   const defaultModalState = {
@@ -30,6 +34,7 @@ function ProductPage() {
   const [pageInfo, setPageInfo] = useState({});
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [isDelModalOpen, setIsDelModalOpen] = useState(false);
+  const [isFullLoading, setIsFullLoading] = useState(false);
 
   const checkUserLogin = async () => {
     try {
@@ -53,12 +58,15 @@ function ProductPage() {
 
   // 取得產品資料API
   const getProductData = async (page = 1) => {
+    setIsFullLoading(true);
     try {
       const res = await axios.get(`${baseUrl}/v2/api/${apiPath}/admin/products?page=${page}`)
       setProducts(res.data.products);
       setPageInfo(res.data.pagination);
     } catch (error) {
       console.error('取得資料失敗')
+    } finally {
+    setIsFullLoading(false);     
     }
   };
 
@@ -68,17 +76,6 @@ function ProductPage() {
     document.querySelector('#fileInput').value = '';
     mode === 'create' ? setTempProduct(defaultModalState) : setTempProduct(product);
     setIsProductModalOpen(true);
-  }
-
-  // 處理新增或編輯成功失敗
-  const handleResultAlert = (icon, text) => {
-    Swal.fire({
-      position: "top-end",
-      icon,
-      text,
-      showConfirmButton: false,
-      timer: 1500
-    });
   }
 
   // 處理刪除產品打開關閉
@@ -131,7 +128,6 @@ function ProductPage() {
       getProductData={getProductData}
       isOpen={isProductModalOpen}
       setIsOpen={setIsProductModalOpen}
-      handleResultAlert={handleResultAlert}
     />
     {/* 是否刪除產品modal */}
     <DelProductModal
@@ -139,8 +135,8 @@ function ProductPage() {
       getProductData={getProductData}
       isOpen={isDelModalOpen}
       setIsOpen={setIsDelModalOpen}
-      handleResultAlert={handleResultAlert}
     />
+    {isFullLoading && <FullscreenLoading />}
   </>)
 }
 

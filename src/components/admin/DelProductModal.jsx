@@ -4,13 +4,20 @@ import { useEffect, useRef } from 'react'
 import { Modal } from 'bootstrap'
 import axios from 'axios'
 
+import Toast from './toast'
+
+import { useDispatch } from 'react-redux'
+import { showToast } from '../../redux/slice/toastSlice'
+
 function DelProductModal({
   tempProduct,
   getProductData,
   isOpen,
   setIsOpen,
-  handleResultAlert
 }) {
+
+  const dispatch = useDispatch();
+
   // 取DOM
   const deleteModalRef = useRef(null);
   // 取得的DOM new建立實例
@@ -19,21 +26,29 @@ function DelProductModal({
       backdrop: true
     })
   }, [])
+
   useEffect(() => {
-    if(isOpen){
+    if (isOpen) {
       const deleteModal = Modal.getInstance(deleteModalRef.current);
       deleteModal.show();
     }
-  },[isOpen])
+  }, [isOpen])
+
   // 刪除產品API
   const deleteProduct = async () => {
     try {
       const res = await axios.delete(`${baseUrl}/v2/api/${apiPath}/admin/product/${tempProduct.id}`);
-      handleResultAlert('success', res.data.message);
+      dispatch(showToast({
+        text: res.data.message,
+        status: 'success'
+      }))
       getProductData();;
       handleCloseDeleteModal();
     } catch (error) {
-      handleResultAlert('error', error.response.data.message);
+      dispatch(showToast({
+        text: error.response.data.message,
+        status: 'error'
+      }))
     }
   }
   const handleCloseDeleteModal = () => {
@@ -55,6 +70,7 @@ function DelProductModal({
           <div className="modal-header">
             <h1 className="modal-title fs-5">刪除產品</h1>
             <button
+              onClick={handleCloseDeleteModal}
               type="button"
               className="btn-close"
               data-bs-dismiss="modal"
@@ -80,6 +96,7 @@ function DelProductModal({
         </div>
       </div>
     </div>
+    <Toast />
   </>)
 }
 

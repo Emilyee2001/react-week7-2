@@ -4,14 +4,21 @@ import { useEffect, useRef, useState } from 'react'
 import { Modal } from 'bootstrap'
 import axios from 'axios'
 
+import { useDispatch } from 'react-redux'
+import { showToast } from '../../redux/slice/toastSlice'
+
+import Toast from './toast'
+
 function ProductModal({
   productMode,
   tempProduct,
   getProductData,
   isOpen,
   setIsOpen,
-  handleResultAlert,
 }) {
+
+  const dispatch = useDispatch();
+
   // 建立狀態
   const [modalData, setModalData] = useState(tempProduct);
   // 取DOM
@@ -79,11 +86,17 @@ function ProductModal({
           is_enabled: modalData.is_enabled ? 1 : 0,
         }
       })
-      handleResultAlert('success', res.data.message);
+      dispatch(showToast({
+        text: res.data.message,
+        status: 'success'
+      }))
       getProductData();
       handleCloseModal();
     } catch (error) {
-      handleResultAlert('error', error.response.data.message);
+      dispatch(showToast({
+        text: error.response.data.message,
+        status: 'error'
+      }))
     }
   }
   // 編輯產品API
@@ -97,11 +110,17 @@ function ProductModal({
           is_enabled: modalData.is_enabled ? 1 : 0,
         }
       })
-      handleResultAlert('success', res.data.message);
+      dispatch(showToast({
+        text: res.data.message,
+        status: 'success'
+      }))
       getProductData();
       handleCloseModal();
     } catch (error) {
-      handleResultAlert('error', error.response.data.message);
+      dispatch(showToast({
+        text: error.response.data.message,
+        status: 'error'
+      }))
     }
   }
   // 處理確認新增or編輯產品
@@ -121,7 +140,10 @@ function ProductModal({
         imageUrl: uploadedImageUrl
       })
     } catch (error) {
-      handleResultAlert('error', error.response.data.message);
+      dispatch(showToast({
+        text: error.response.data.message,
+        status: 'error'
+      }))
       document.querySelector('#fileInput').value = '';
     }
   }
@@ -344,6 +366,7 @@ function ProductModal({
         </div>
       </div>
     </div>
+    <Toast />
   </>)
 }
 
