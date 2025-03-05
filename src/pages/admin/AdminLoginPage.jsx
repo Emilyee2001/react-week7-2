@@ -32,7 +32,7 @@ function LoginPage() {
   });
 
   // 登入API
-  const accountLogin = async () => {
+  const accountLogin = async (account) => {
     setIsLoading(true);
     try {
       const res = await axios.post(`${baseUrl}/v2/admin/signin`, account)
