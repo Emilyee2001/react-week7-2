@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router'
 import { useDispatch } from 'react-redux'
 import { useForm } from 'react-hook-form'
 
-import Toast from '../../components/admin/toast'
+import Toast from '../components/admin/toast'
 
-import { showToast } from '../../redux/slice/toastSlice'
+import { showToast } from '../redux/slice/toastSlice'
 
 function LoginPage() {
 

@@ -16,7 +16,7 @@ export default function FrontLayout() {
       name: '購物車',
     },
     {
-      path: '/login/admin',
+      path: '/login',
       name: '後台登入',
     }
   ]

@@ -6,9 +6,12 @@ import AboutPage from "../pages/AboutPage";
 import ProductListPage from "../pages/ProductListPage";
 import ProductDetailPage from "../pages/ProductDetailPage";
 import CartPage from "../pages/CartPage";
+import LoginPage from '../pages/LoginPage';
 // admin
-import AdminLoginPage from '../pages/admin/AdminLoginPage';
-import AdminHomePage from '../pages/admin/AdminHomePage';
+import AdminLayout from "../Layouts/AdminLayout";
+import AdminHomePage from "../pages/admin/AdminHomePage";
+import AdminProductsPage from '../pages/admin/AdminProductsPage';
+import AdminOrdersPage from "../pages/admin/AdminOrdersPage";
 // not found
 import NotFoundPage from "../pages/NotFoundPage";
 
@@ -41,12 +44,26 @@ const router = createHashRouter([
     ]
   },
   {
-    path: '/login/admin',
-    element: <AdminLoginPage />
+    path: '/login',
+    element: <LoginPage />
   },
   {
     path: '/admin',
-    element: <AdminHomePage />
+    element: <AdminLayout />,
+    children: [
+      {
+        path: '',
+        element: <AdminHomePage />
+      },
+      {
+        path: 'products',
+        element: <AdminProductsPage />
+      },
+      {
+        path: 'orders',
+        element: <AdminOrdersPage />
+      }
+    ]
   },
   {
     path:'*',
